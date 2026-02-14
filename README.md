@@ -4,21 +4,26 @@ A basic MCP (Model Context Protocol) server implemented in TypeScript using the 
 
 ## Features
 
-- Simple MCP server with one tool: `add` - adds two integers
-- Supports both stdio and HTTP transports
+- MCP server with three tools:
+  - `add` - adds two numbers
+  - `health` - check server health status
+  - `getweather` - get current weather
+- Supports HTTP transport with JSON response mode
 - HTTP server runs on port 1303, accessible for integration with tools like n8n
+- Modular tool architecture (each tool in a separate file)
 
 ## Files and Their Use
 
-- `src/index.ts`: Main server implementation with the add tool
+- `src/index.ts`: Main server implementation with HTTP handler and tool registration
+- `src/tools/add.ts`: Add tool implementation
+- `src/tools/health.ts`: Health check tool
+- `src/tools/getweather.ts`: Weather tool
 - `package.json`: Node.js project configuration
 - `tsconfig.json`: TypeScript compiler configuration
-- `build/index.js`: Compiled JavaScript output
+- `build/`: Compiled JavaScript output
 - `Dockerfile`: Multi-stage Docker build configuration
 - `docker-compose.yml`: Docker Compose configuration for container management
 - `.dockerignore`: Files to exclude from Docker build context
-- `.vscode/mcp.json`: VS Code MCP configuration for stdio transport debugging
-- `.vscode/tasks.json`: VS Code tasks for running the server in different modes
 - `.github/copilot-instructions.md`: Instructions for GitHub Copilot
 
 ## Commands to Build and Run
@@ -37,14 +42,13 @@ A basic MCP (Model Context Protocol) server implemented in TypeScript using the 
 
 ### Run
 
-- Run HTTP server (for n8n integration): `npm run start:http`
-- Run stdio server (for VS Code MCP): `npm run start`
+- Run HTTP server: `npm run start:http`
 
 ### VS Code Tasks
 
 - Use Ctrl+Shift+P > Tasks: Run Task > Build MCP Server
 - Use Ctrl+Shift+P > Tasks: Run Task > Run MCP Server (HTTP)
-- Use Ctrl+Shift+P > Tasks: Run Task > Run MCP Server (stdio)
+- Use Ctrl+Shift+P > Tasks: Run Task > Test MCP Server
 - Use Ctrl+Shift+P > Tasks: Run Task > Build Docker Image
 - Use Ctrl+Shift+P > Tasks: Run Task > Run Docker Container
 - Use Ctrl+Shift+P > Tasks: Run Task > Docker Compose Up
@@ -64,7 +68,7 @@ The MCP server can be run in a Docker container for easier deployment and isolat
    docker-compose up --build
    ```
 
-2. The server will be available at `http://localhost:1303/mcp`
+2. The server will be available at `http://localhost:1303/`
 3. Health check endpoint: `http://localhost:1303/health`
 
 ### Build and Run with Docker directly
