@@ -4,85 +4,80 @@ import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/
 import { z } from "zod";
 import * as http from "http";
 
-// Create MCP server instance
-const server = new McpServer({
-  name: "demo",
-  version: "1.0.0",
-});
+// Helper function to register tools on a server instance
+function registerTools(server: McpServer) {
+  // Register "add" tool
+  server.registerTool(
+    "add",
+    {
+      description: "Add two numbers together",
+      inputSchema: z.object({
+        a: z.string().describe("First number to add"),
+        b: z.string().describe("Second number to add"),
+      }),
+    },
+    async ({ a, b }: { a: string; b: string }) => {
+      const numA = parseFloat(a);
+      const numB = parseFloat(b);
 
-// Register "add" tool
-server.registerTool(
-  "add",
-  {
-    description: "Add two numbers together",
-    inputSchema: z.object({
-      a: z.string().describe("First number to add"),
-      b: z.string().describe("Second number to add"),
-    }),
-  },
-  async ({ a, b }: { a: string; b: string }) => {
-    const numA = parseFloat(a);
-    const numB = parseFloat(b);
+      if (isNaN(numA) || isNaN(numB)) {
+        return {
+          content: [
+            {
+              type: "text",
+              text: "Error: Invalid numbers provided",
+            },
+          ],
+        };
+      }
 
-    if (isNaN(numA) || isNaN(numB)) {
       return {
         content: [
           {
             type: "text",
-            text: "Error: Invalid numbers provided",
+            text: `${numA} + ${numB} = ${numA + numB}`,
           },
         ],
       };
     }
+  );
 
-    return {
+  // Register "health" tool
+  server.registerTool(
+    "health",
+    {
+      description: "Check server health",
+      inputSchema: z.object({}),
+    },
+    async () => ({
       content: [
         {
           type: "text",
-          text: `${numA} + ${numB} = ${numA + numB}`,
+          text: `Server is healthy!`,
         },
       ],
-    };
-  }
-);
+    })
+  );
 
-// Optional: register a simple "health" tool for testing
-server.registerTool(
-  "health",
-  {
-    description: "Check server health",
-    inputSchema: z.object({}),
-  },
-  async () => ({
-    content: [
-      {
-        type: "text",
-        text: `Server is healthy!`,
-      },
-    ],
-  })
-);
-
-// Register "getweather" tool
-server.registerTool(
-  "getweather",
-  {
-    description: "Get the current weather",
-    inputSchema: z.object({}),
-  },
-  async () => ({
-    content: [
-      {
-        type: "text",
-        text: "sunny",
-      },
-    ],
-  })
-);
+  // Register "getweather" tool
+  server.registerTool(
+    "getweather",
+    {
+      description: "Get the current weather",
+      inputSchema: z.object({}),
+    },
+    async () => ({
+      content: [
+        {
+          type: "text",
+          text: "sunny",
+        },
+      ],
+    })
+  );
+}
 
 async function main() {
-  const transportType = process.argv[2];
-
   // HTTP transport with JSON response mode (no SSE)
   const server_http = http.createServer(async (req, res) => {
     // Set CORS headers
@@ -120,72 +115,7 @@ async function main() {
         });
 
         // Register tools on the request server
-        requestServer.registerTool(
-          "add",
-          {
-            description: "Add two numbers together",
-            inputSchema: z.object({
-              a: z.string().describe("First number to add"),
-              b: z.string().describe("Second number to add"),
-            }),
-          },
-          async ({ a, b }: { a: string; b: string }) => {
-            const numA = parseFloat(a);
-            const numB = parseFloat(b);
-
-            if (isNaN(numA) || isNaN(numB)) {
-              return {
-                content: [
-                  {
-                    type: "text",
-                    text: "Error: Invalid numbers provided",
-                  },
-                ],
-              };
-            }
-
-            return {
-              content: [
-                {
-                  type: "text",
-                  text: `${numA} + ${numB} = ${numA + numB}`,
-                },
-              ],
-            };
-          }
-        );
-
-        requestServer.registerTool(
-          "health",
-          {
-            description: "Check server health",
-            inputSchema: z.object({}),
-          },
-          async () => ({
-            content: [
-              {
-                type: "text",
-                text: `Server is healthy!`,
-              },
-            ],
-          })
-        );
-
-        requestServer.registerTool(
-          "getweather",
-          {
-            description: "Get the current weather",
-            inputSchema: z.object({}),
-          },
-          async () => ({
-            content: [
-              {
-                type: "text",
-                text: "sunny",
-              },
-            ],
-          })
-        );
+        registerTools(requestServer);
 
         await requestServer.connect(transport);
         await transport.handleRequest(req, res);
