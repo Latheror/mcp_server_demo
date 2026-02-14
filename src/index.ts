@@ -4,9 +4,36 @@ import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/
 import { z } from "zod";
 import * as http from "http";
 
+const PORT = 1303;
+const HOST = "0.0.0.0";
+
+// Helper to create text content responses
+const textResponse = (text: string) => ({
+  content: [{ type: "text" as const, text }],
+});
+
 // Helper function to register tools on a server instance
 function registerTools(server: McpServer) {
-  // Register "add" tool
+  // Simple tools definition
+  const simpleTools = [
+    {
+      name: "health",
+      description: "Check server health",
+      handler: () => textResponse("Server is healthy!"),
+    },
+    {
+      name: "getweather",
+      description: "Get the current weather",
+      handler: () => textResponse("sunny"),
+    },
+  ];
+
+  // Register simple tools
+  simpleTools.forEach(({ name, description, handler }) => {
+    server.registerTool(name, { description, inputSchema: z.object({}) }, handler);
+  });
+
+  // Register "add" tool (has custom logic)
   server.registerTool(
     "add",
     {
@@ -21,100 +48,41 @@ function registerTools(server: McpServer) {
       const numB = parseFloat(b);
 
       if (isNaN(numA) || isNaN(numB)) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: "Error: Invalid numbers provided",
-            },
-          ],
-        };
+        return textResponse("Error: Invalid numbers provided");
       }
 
-      return {
-        content: [
-          {
-            type: "text",
-            text: `${numA} + ${numB} = ${numA + numB}`,
-          },
-        ],
-      };
+      return textResponse(`${numA} + ${numB} = ${numA + numB}`);
     }
-  );
-
-  // Register "health" tool
-  server.registerTool(
-    "health",
-    {
-      description: "Check server health",
-      inputSchema: z.object({}),
-    },
-    async () => ({
-      content: [
-        {
-          type: "text",
-          text: `Server is healthy!`,
-        },
-      ],
-    })
-  );
-
-  // Register "getweather" tool
-  server.registerTool(
-    "getweather",
-    {
-      description: "Get the current weather",
-      inputSchema: z.object({}),
-    },
-    async () => ({
-      content: [
-        {
-          type: "text",
-          text: "sunny",
-        },
-      ],
-    })
   );
 }
 
 async function main() {
-  // HTTP transport with JSON response mode (no SSE)
   const server_http = http.createServer(async (req, res) => {
-    // Set CORS headers
+    // CORS
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
     res.setHeader("Access-Control-Allow-Headers", "Content-Type, mcp-session-id, Last-Event-ID, mcp-protocol-version");
 
-    // Handle preflight requests
     if (req.method === "OPTIONS") {
       res.writeHead(200);
       res.end();
       return;
     }
 
-    // Health endpoint
     if (req.method === "GET" && req.url === "/health") {
       res.writeHead(200, { "Content-Type": "application/json" });
       res.end(JSON.stringify({ status: "ok", version: "1.0.0" }));
       return;
     }
 
-    // MCP endpoint - handle both GET and POST to root path
     if ((req.method === "POST" || req.method === "GET") && req.url === "/") {
       try {
-        // Create a new transport for each request (stateless)
         const transport = new StreamableHTTPServerTransport({
-          sessionIdGenerator: undefined, // Stateless
-          enableJsonResponse: true, // JSON response mode
+          sessionIdGenerator: undefined,
+          enableJsonResponse: true,
         });
 
-        // Create a new server instance for this request
-        const requestServer = new McpServer({
-          name: "demo",
-          version: "1.0.0",
-        });
-
-        // Register tools on the request server
+        const requestServer = new McpServer({ name: "demo", version: "1.0.0" });
         registerTools(requestServer);
 
         await requestServer.connect(transport);
@@ -133,13 +101,12 @@ async function main() {
       return;
     }
 
-    // Fallback 404
     res.writeHead(404).end("Not Found");
   });
 
-  server_http.listen(1303, "0.0.0.0", () => {
-    console.log("MCP Server running on http://0.0.0.0:1303");
-    console.log("Health endpoint available at http://0.0.0.0:1303/health");
+  server_http.listen(PORT, HOST, () => {
+    console.log(`MCP Server running on http://${HOST}:${PORT}`);
+    console.log(`Health endpoint available at http://${HOST}:${PORT}/health`);
   });
 }
 
