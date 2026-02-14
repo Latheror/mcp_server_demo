@@ -1,6 +1,7 @@
 // src/index.ts
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
+import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
 import * as http from "http";
 
@@ -58,6 +59,23 @@ server.registerTool(
       {
         type: "text",
         text: `Server is healthy!`,
+      },
+    ],
+  })
+);
+
+// Register "getweather" tool
+server.registerTool(
+  "getweather",
+  {
+    description: "Get the current weather",
+    inputSchema: z.object({}),
+  },
+  async () => ({
+    content: [
+      {
+        type: "text",
+        text: "sunny",
       },
     ],
   })
@@ -155,6 +173,22 @@ async function main() {
             })
           );
 
+          requestServer.registerTool(
+            "getweather",
+            {
+              description: "Get the current weather",
+              inputSchema: z.object({}),
+            },
+            async () => ({
+              content: [
+                {
+                  type: "text",
+                  text: "sunny",
+                },
+              ],
+            })
+          );
+
           await requestServer.connect(transport);
           await transport.handleRequest(req, res);
         } catch (error) {
@@ -179,8 +213,11 @@ async function main() {
       console.log("MCP Server running on http://0.0.0.0:1303");
       console.log("Health endpoint available at http://0.0.0.0:1303/health");
     });
+  } else if (transportType === "stdio") {
+    // Stdio transport
+    await server.connect(new StdioServerTransport());
   } else {
-    console.log("MCP Server http error: No valid transport type provided. Use 'http' as an argument to start the server with HTTP transport.");
+    console.log("MCP Server error: No valid transport type provided. Use 'http' or 'stdio' as an argument to start the server.");
   }
 }
 

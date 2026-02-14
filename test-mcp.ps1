@@ -33,5 +33,15 @@ $call = @{
     }
 } | ConvertTo-Json -Compress
 
+$call_weather = @{
+    jsonrpc = "2.0"
+    id = 4
+    method = "tools/call"
+    params = @{
+        name = "getweather"
+        arguments = @{}
+    }
+} | ConvertTo-Json -Compress
+
 # Send requests to MCP server
-@($init, $list, $call) -join [char]10 | npm run start
+@($init, $list, $call, $call_weather) -join [char]10 | node build/index.js stdio
