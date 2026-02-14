@@ -1,19 +1,19 @@
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { z } from "zod";
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { z } from 'zod';
 
 const textResponse = (text: string) => ({
-  content: [{ type: "text" as const, text }],
+  content: [{ type: 'text' as const, text }],
 });
 
 export function healthHandler() {
-  return textResponse("Server is healthy!");
+  return textResponse('Server is healthy!');
 }
 
 export function registerHealthTool(server: McpServer) {
   server.registerTool(
-    "health",
+    'health',
     {
-      description: "Check server health",
+      description: 'Check server health',
       inputSchema: z.object({}),
     },
     healthHandler

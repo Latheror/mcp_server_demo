@@ -1,19 +1,19 @@
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { z } from "zod";
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { z } from 'zod';
 
 const textResponse = (text: string) => ({
-  content: [{ type: "text" as const, text }],
+  content: [{ type: 'text' as const, text }],
 });
 
 export function weatherHandler() {
-  return textResponse("sunny");
+  return textResponse('sunny');
 }
 
 export function registerWeatherTool(server: McpServer) {
   server.registerTool(
-    "getweather",
+    'getweather',
     {
-      description: "Get the current weather",
+      description: 'Get the current weather',
       inputSchema: z.object({}),
     },
     weatherHandler
