@@ -16,8 +16,9 @@ function registerTools(server: McpServer) {
   registerWeatherTool(server);
 }
 
-async function main() {
-  const server_http = http.createServer(async (req, res) => {
+// Export the request handler for testing
+export function createRequestHandler() {
+  return async (req: http.IncomingMessage, res: http.ServerResponse) => {
     // CORS
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
@@ -62,7 +63,12 @@ async function main() {
     }
 
     res.writeHead(404).end("Not Found");
-  });
+  };
+}
+
+async function main() {
+  const requestHandler = createRequestHandler();
+  const server_http = http.createServer(requestHandler);
 
   server_http.listen(PORT, HOST, () => {
     console.log(`MCP Server running on http://${HOST}:${PORT}`);
@@ -70,7 +76,9 @@ async function main() {
   });
 }
 
-main().catch((err) => {
-  console.error("Fatal error in MCP server:", err);
-  process.exit(1);
-});
+if (process.argv[1]?.endsWith('index.js')) {
+  main().catch((err) => {
+    console.error("Fatal error in MCP server:", err);
+    process.exit(1);
+  });
+}
