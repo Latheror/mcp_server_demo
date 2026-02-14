@@ -17,18 +17,34 @@ server.registerTool(
   {
     description: "Add two numbers together",
     inputSchema: z.object({
-      a: z.number().describe("First number to add"),
-      b: z.number().describe("Second number to add"),
+      a: z.union([z.number(), z.string()]).describe("First number to add"),
+      b: z.union([z.number(), z.string()]).describe("Second number to add"),
     }),
   },
-  async ({ a, b }: { a: number; b: number }) => ({
-    content: [
-      {
-        type: "text",
-        text: `${a} + ${b} = ${a + b}`,
-      },
-    ],
-  })
+  async ({ a, b }: { a: number | string; b: number | string }) => {
+    const numA = typeof a === 'string' ? parseFloat(a) : a;
+    const numB = typeof b === 'string' ? parseFloat(b) : b;
+    
+    if (isNaN(numA) || isNaN(numB)) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: "Error: Invalid numbers provided",
+          },
+        ],
+      };
+    }
+    
+    return {
+      content: [
+        {
+          type: "text",
+          text: `${numA} + ${numB} = ${numA + numB}`,
+        },
+      ],
+    };
+  }
 );
 
 // Optional: register a simple "health" tool for testing
