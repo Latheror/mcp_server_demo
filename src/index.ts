@@ -1,7 +1,6 @@
 // src/index.ts
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
 import * as http from "http";
 
@@ -181,10 +180,7 @@ async function main() {
       console.log("Health endpoint available at http://0.0.0.0:1303/health");
     });
   } else {
-    // Fallback: stdio transport
-    const transport = new StdioServerTransport();
-    await server.connect(transport);
-    console.log("MCP Server running on stdio");
+    console.log("MCP Server http error: No valid transport type provided. Use 'http' as an argument to start the server with HTTP transport.");
   }
 }
 
