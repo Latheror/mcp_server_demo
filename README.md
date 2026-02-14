@@ -11,22 +11,30 @@ A basic MCP (Model Context Protocol) server implemented in TypeScript using the 
 - Supports HTTP transport with JSON response mode
 - HTTP server runs on port 1303, accessible for integration with tools like n8n
 - Modular tool architecture (each tool in a separate file)
+- Comprehensive test suite with Jest (unit and integration tests)
+- Code linting with ESLint and formatting with Prettier
+- Docker support for containerized deployment
+- GitHub Actions CI for automated testing
 
 ## Files and Their Use
 
 - `src/index.ts`: Main server implementation with HTTP handler and tool registration
+- `src/__tests__/index.test.ts`: Integration tests for the HTTP server handler
 - `src/tools/add.ts`: Add tool implementation
 - `src/tools/health.ts`: Health check tool
 - `src/tools/getweather.ts`: Weather tool
 - `src/tools/__tests__/`: Unit tests for each tool
-- `package.json`: Node.js project configuration
+- `package.json`: Node.js project configuration with scripts for build, test, lint, and format
 - `tsconfig.json`: TypeScript compiler configuration
-- `jest.config.js`: Jest testing framework configuration
+- `jest.config.cjs`: Jest testing framework configuration (CommonJS for ES module compatibility)
+- `.eslintrc.json`: ESLint configuration for code linting
+- `.prettierrc.json`: Prettier configuration for code formatting
 - `build/`: Compiled JavaScript output
 - `Dockerfile`: Multi-stage Docker build configuration
 - `docker-compose.yml`: Docker Compose configuration for container management
 - `.dockerignore`: Files to exclude from Docker build context
 - `.github/copilot-instructions.md`: Instructions for GitHub Copilot
+- `.github/workflows/ci.yml`: GitHub Actions CI configuration
 
 ## Commands to Build and Run
 
@@ -42,32 +50,49 @@ A basic MCP (Model Context Protocol) server implemented in TypeScript using the 
 
 - Build the project: `npm run build`
 
-### Test
+### Lint and Format
 
-- Run tests: `npm test`
-- Run tests in watch mode: `npm run test:watch`
+- Lint code: `npm run lint`
+- Fix linting issues: `npm run lint:fix`
+- Format code: `npm run format`
+- Check formatting: `npm run format:check`
+
+## Continuous Integration
+
+The project uses GitHub Actions for CI. On every push and pull request to main/master branches, the following checks run:
+
+- Code linting with ESLint
+- Code formatting check with Prettier
+- TypeScript compilation
+- Test execution with Jest
+- Multi-Node.js version testing (18.x, 20.x)
 
 ## Testing
 
-The project includes unit tests for all tools using Jest:
+The project includes comprehensive unit and integration tests using Jest:
 
-- **Add tool tests**: Tests for addition with positive/negative numbers, decimals, and error handling
-- **Health tool tests**: Tests for the health check endpoint
-- **Weather tool tests**: Tests for the weather tool
+- **Tool unit tests**: Tests for addition, health check, and weather tools
+- **Server integration tests**: Tests for HTTP endpoints, CORS, error handling, and MCP request handling
 
-Tests are located in `src/tools/__tests__/` with a `.test.ts` suffix.
+Tests are located in:
+- `src/tools/__tests__/` for tool unit tests
+- `src/__tests__/` for server integration tests
 
-To run tests: `npm test`
+All tests use `.test.ts` suffix and achieve high code coverage.
 
 ### Run
 
-- Run HTTP server: `npm run start:http`
+- Run HTTP server: `npm run start` or `npm run start:http`
 
 ### VS Code Tasks
 
 - Use Ctrl+Shift+P > Tasks: Run Task > Build MCP Server
 - Use Ctrl+Shift+P > Tasks: Run Task > Run MCP Server (HTTP)
 - Use Ctrl+Shift+P > Tasks: Run Task > Test MCP Server (Jest)
+- Use Ctrl+Shift+P > Tasks: Run Task > Lint Code
+- Use Ctrl+Shift+P > Tasks: Run Task > Fix Linting Issues
+- Use Ctrl+Shift+P > Tasks: Run Task > Format Code
+- Use Ctrl+Shift+P > Tasks: Run Task > Check Code Formatting
 - Use Ctrl+Shift+P > Tasks: Run Task > Build Docker Image
 - Use Ctrl+Shift+P > Tasks: Run Task > Run Docker Container
 - Use Ctrl+Shift+P > Tasks: Run Task > Docker Compose Up
