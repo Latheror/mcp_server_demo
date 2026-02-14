@@ -1,59 +1,19 @@
 // src/index.ts
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
-import { z } from "zod";
 import * as http from "http";
+import { registerAddTool } from "./tools/add.js";
+import { registerHealthTool } from "./tools/health.js";
+import { registerWeatherTool } from "./tools/getweather.js";
 
 const PORT = 1303;
 const HOST = "0.0.0.0";
 
-// Helper to create text content responses
-const textResponse = (text: string) => ({
-  content: [{ type: "text" as const, text }],
-});
-
 // Helper function to register tools on a server instance
 function registerTools(server: McpServer) {
-  // Simple tools definition
-  const simpleTools = [
-    {
-      name: "health",
-      description: "Check server health",
-      handler: () => textResponse("Server is healthy!"),
-    },
-    {
-      name: "getweather",
-      description: "Get the current weather",
-      handler: () => textResponse("sunny"),
-    },
-  ];
-
-  // Register simple tools
-  simpleTools.forEach(({ name, description, handler }) => {
-    server.registerTool(name, { description, inputSchema: z.object({}) }, handler);
-  });
-
-  // Register "add" tool (has custom logic)
-  server.registerTool(
-    "add",
-    {
-      description: "Add two numbers together",
-      inputSchema: z.object({
-        a: z.string().describe("First number to add"),
-        b: z.string().describe("Second number to add"),
-      }),
-    },
-    async ({ a, b }: { a: string; b: string }) => {
-      const numA = parseFloat(a);
-      const numB = parseFloat(b);
-
-      if (isNaN(numA) || isNaN(numB)) {
-        return textResponse("Error: Invalid numbers provided");
-      }
-
-      return textResponse(`${numA} + ${numB} = ${numA + numB}`);
-    }
-  );
+  registerAddTool(server);
+  registerHealthTool(server);
+  registerWeatherTool(server);
 }
 
 async function main() {
