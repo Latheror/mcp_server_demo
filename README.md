@@ -18,8 +18,10 @@ A basic MCP (Model Context Protocol) server implemented in TypeScript using the 
 - `src/tools/add.ts`: Add tool implementation
 - `src/tools/health.ts`: Health check tool
 - `src/tools/getweather.ts`: Weather tool
+- `src/tools/__tests__/`: Unit tests for each tool
 - `package.json`: Node.js project configuration
 - `tsconfig.json`: TypeScript compiler configuration
+- `jest.config.js`: Jest testing framework configuration
 - `build/`: Compiled JavaScript output
 - `Dockerfile`: Multi-stage Docker build configuration
 - `docker-compose.yml`: Docker Compose configuration for container management
@@ -40,6 +42,23 @@ A basic MCP (Model Context Protocol) server implemented in TypeScript using the 
 
 - Build the project: `npm run build`
 
+### Test
+
+- Run tests: `npm test`
+- Run tests in watch mode: `npm run test:watch`
+
+## Testing
+
+The project includes unit tests for all tools using Jest:
+
+- **Add tool tests**: Tests for addition with positive/negative numbers, decimals, and error handling
+- **Health tool tests**: Tests for the health check endpoint
+- **Weather tool tests**: Tests for the weather tool
+
+Tests are located in `src/tools/__tests__/` with a `.test.ts` suffix.
+
+To run tests: `npm test`
+
 ### Run
 
 - Run HTTP server: `npm run start:http`
@@ -48,7 +67,7 @@ A basic MCP (Model Context Protocol) server implemented in TypeScript using the 
 
 - Use Ctrl+Shift+P > Tasks: Run Task > Build MCP Server
 - Use Ctrl+Shift+P > Tasks: Run Task > Run MCP Server (HTTP)
-- Use Ctrl+Shift+P > Tasks: Run Task > Test MCP Server
+- Use Ctrl+Shift+P > Tasks: Run Task > Test MCP Server (Jest)
 - Use Ctrl+Shift+P > Tasks: Run Task > Build Docker Image
 - Use Ctrl+Shift+P > Tasks: Run Task > Run Docker Container
 - Use Ctrl+Shift+P > Tasks: Run Task > Docker Compose Up

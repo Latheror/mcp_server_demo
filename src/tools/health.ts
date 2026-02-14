@@ -5,6 +5,10 @@ const textResponse = (text: string) => ({
   content: [{ type: "text" as const, text }],
 });
 
+export function healthHandler() {
+  return textResponse("Server is healthy!");
+}
+
 export function registerHealthTool(server: McpServer) {
   server.registerTool(
     "health",
@@ -12,6 +16,6 @@ export function registerHealthTool(server: McpServer) {
       description: "Check server health",
       inputSchema: z.object({}),
     },
-    () => textResponse("Server is healthy!")
+    healthHandler
   );
 }

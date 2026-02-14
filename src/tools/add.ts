@@ -5,6 +5,17 @@ const textResponse = (text: string) => ({
   content: [{ type: "text" as const, text }],
 });
 
+export async function addHandler(args: { a: string; b: string }) {
+  const numA = parseFloat(args.a);
+  const numB = parseFloat(args.b);
+
+  if (isNaN(numA) || isNaN(numB)) {
+    return textResponse("Error: Invalid numbers provided");
+  }
+
+  return textResponse(`${numA} + ${numB} = ${numA + numB}`);
+}
+
 export function registerAddTool(server: McpServer) {
   server.registerTool(
     "add",
@@ -15,15 +26,6 @@ export function registerAddTool(server: McpServer) {
         b: z.string().describe("Second number to add"),
       }),
     },
-    async ({ a, b }: { a: string; b: string }) => {
-      const numA = parseFloat(a);
-      const numB = parseFloat(b);
-
-      if (isNaN(numA) || isNaN(numB)) {
-        return textResponse("Error: Invalid numbers provided");
-      }
-
-      return textResponse(`${numA} + ${numB} = ${numA + numB}`);
-    }
+    addHandler
   );
 }

@@ -10,16 +10,21 @@
     "build": "tsc",
     "start": "node build/index.js",
     "start:http": "node build/index.js http",
-    "dev": "ts-node-esm src/index.ts http"
+    "dev": "ts-node-esm src/index.ts http",
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.26.0",
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@types/jest": "^30.0.0",
     "@types/node": "^20.11.30",
-    "typescript": "^5.9.3",
-    "ts-node": "^10.9.2"
+    "jest": "^30.2.0",
+    "ts-jest": "^29.4.6",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
   },
   "repository": {
     "type": "git",

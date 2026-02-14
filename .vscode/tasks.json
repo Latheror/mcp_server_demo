@@ -69,6 +69,23 @@
       "problemMatcher": []
     },
     {
+      "label": "Test MCP Server (Jest)",
+      "type": "shell",
+      "command": "npm",
+      "args": ["test"],
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
       "label": "Build Docker Image",
       "type": "shell",
       "command": "docker",
