@@ -9,7 +9,17 @@
   "scripts": {
     "build": "tsc",
     "start": "node build/index.js",
-    "start:http": "node build/index.js http"
+    "start:http": "node build/index.js http",
+    "dev": "ts-node-esm src/index.ts http"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.26.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.30",
+    "typescript": "^5.9.3",
+    "ts-node": "^10.9.2"
   },
   "repository": {
     "type": "git",
@@ -21,11 +31,5 @@
   "bugs": {
     "url": "https://github.com/Latheror/mcp_server_demo/issues"
   },
-  "homepage": "https://github.com/Latheror/mcp_server_demo#readme",
-  "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.26.0",
-    "@types/node": "^25.2.3",
-    "typescript": "^5.9.3",
-    "zod": "^4.3.6"
-  }
+  "homepage": "https://github.com/Latheror/mcp_server_demo#readme"
 }
