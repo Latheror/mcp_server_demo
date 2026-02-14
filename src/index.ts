@@ -59,8 +59,8 @@ async function main() {
       }
     });
 
-    server_http.listen(3000, "0.0.0.0", () => {
-      console.error("MCP Server running on http://0.0.0.0:3000/mcp");
+    server_http.listen(1303, "0.0.0.0", () => {
+      console.error("MCP Server running on http://0.0.0.0:1303/mcp");
     });
   } else {
     // Stdio transport for local debugging

@@ -6,7 +6,7 @@ A basic MCP (Model Context Protocol) server implemented in TypeScript using the 
 
 - Simple MCP server with one tool: `add` - adds two integers
 - Supports both stdio and HTTP transports
-- HTTP server runs on port 3000, accessible for integration with tools like n8n
+- HTTP server runs on port 1303, accessible for integration with tools like n8n
 
 ## Files and Their Use
 
@@ -45,4 +45,4 @@ A basic MCP (Model Context Protocol) server implemented in TypeScript using the 
 
 ## Integration with n8n
 
-To access from n8n docker container, run the server with HTTP transport. If n8n is in Docker, ensure the host port 3000 is accessible (e.g., use host networking or port mapping).
+To access from n8n docker container, run the server with HTTP transport. If n8n is in Docker, ensure the host port 1303 is accessible (e.g., use host networking or port mapping).
