@@ -59,15 +59,6 @@ async function main() {
 
     await server.connect(transport);
 
-    // Monkey-patch transport to handle n8n's getTools request properly
-    transport.on("getTools", async () => {
-      // n8n expects a simple array of tools: name + description
-      return server.getTools().map((tool) => ({
-        name: tool.name,
-        description: tool.description,
-      }));
-    });
-
     const server_http = http.createServer(async (req, res) => {
       // Health endpoint
       if (req.method === "GET" && req.url === "/health") {
