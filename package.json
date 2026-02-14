@@ -1,0 +1,31 @@
+{
+  "name": "mcp_server_demo",
+  "version": "1.0.0",
+  "description": "A basic MCP (Model Context Protocol) server implemented in TypeScript.",
+  "type": "module",
+  "bin": {
+    "mcp-server-demo": "./build/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node build/index.js",
+    "start:http": "node build/index.js http"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Latheror/mcp_server_demo.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Latheror/mcp_server_demo/issues"
+  },
+  "homepage": "https://github.com/Latheror/mcp_server_demo#readme",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.26.0",
+    "@types/node": "^25.2.3",
+    "typescript": "^5.9.3",
+    "zod": "^4.3.6"
+  }
+}
